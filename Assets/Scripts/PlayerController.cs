@@ -51,16 +51,30 @@ public class PlayerController : MonoBehaviour
             count++;
             SetCountText();
             
-            
-            
-            Type pickUpType = Type.GetType("Rotator");
+            Type pickUpType = Type.GetType("Rotator"); // pickup has rotator class from Rotator script 
             reaminingPickUps = UnityEngine.Object.FindObjectsByType(pickUpType, FindObjectsSortMode.None).Length-1;
             //-1 because occurs synchronously, before pickup is destroyed
             Debug.Log(reaminingPickUps);
-            if (reaminingPickUps == 0)
+            if (reaminingPickUps == 0) //WIN CONDITION
             {
                 winTextObject.SetActive(true);
+                Destroy(GameObject.FindGameObjectWithTag("Enemy"));
             }
+        }
+        
+        
+        
+    }
+
+    private void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.CompareTag(("Enemy"))) //LOSE CONDITION
+        {
+
+            Destroy(gameObject);
+            
+            winTextObject.SetActive(true);
+            winTextObject.GetComponent<TextMeshProUGUI>().text = "You Lose...";
         }
     }
 
