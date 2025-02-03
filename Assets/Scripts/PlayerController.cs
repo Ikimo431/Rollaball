@@ -18,7 +18,7 @@ public class PlayerController : MonoBehaviour
     public GameObject winTextObject;
     private int reaminingPickUps;
  
-    
+    public event Action OnPlayerDeath;
     void Start()
     {
        rb = GetComponent<Rigidbody>();
@@ -40,7 +40,11 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         Vector3 movement = new Vector3(movementX,0.0f, movementY);
-        rb.AddForce(movement*speed);
+        if (rb !=null)
+        {
+            rb.AddForce(movement*speed);
+        }
+        
     }
 
     private void OnTriggerEnter(Collider other)
@@ -54,30 +58,30 @@ public class PlayerController : MonoBehaviour
             Type pickUpType = Type.GetType("Rotator"); // pickup has rotator class from Rotator script 
             reaminingPickUps = UnityEngine.Object.FindObjectsByType(pickUpType, FindObjectsSortMode.None).Length-1;
             //-1 because occurs synchronously, before pickup is destroyed
-            Debug.Log(reaminingPickUps);
+            
             if (reaminingPickUps == 0) //WIN CONDITION
             {
                 winTextObject.SetActive(true);
                 Destroy(GameObject.FindGameObjectWithTag("Enemy"));
             }
         }
-        
-        
-        
     }
 
     private void OnCollisionEnter(Collision other)
     {
         if (other.gameObject.CompareTag(("Enemy"))) //LOSE CONDITION
         {
-
-            Destroy(gameObject);
-            
-            winTextObject.SetActive(true);
-            winTextObject.GetComponent<TextMeshProUGUI>().text = "You Lose...";
+            GameLoss();
         }
     }
 
+    void GameLoss()
+    {
+        Destroy(gameObject);
+        OnPlayerDeath?.Invoke();
+        winTextObject.SetActive(true);
+        winTextObject.GetComponent<TextMeshProUGUI>().text = "You Lose...";
+    }
     void SetCountText()
     {
         countText.text = "Count: " + count.ToString();
