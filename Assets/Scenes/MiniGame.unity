@@ -1817,6 +1817,7 @@ GameObject:
   - component: {fileID: 1592158875}
   - component: {fileID: 1592158874}
   - component: {fileID: 1592158876}
+  - component: {fileID: 1592158877}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1985,6 +1986,20 @@ MonoBehaviour:
   speed: 10
   countText: {fileID: 2084513015}
   winTextObject: {fileID: 857108565}
+--- !u!114 &1592158877
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1592158869}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60b5022423477c840b2b5d7c79627d5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  jumpForce: 5
+  dashForce: 10
 --- !u!1 &1612338203
 GameObject:
   m_ObjectHideFlags: 0
@@ -2510,7 +2525,7 @@ GameObject:
   - component: {fileID: 1916827628}
   m_Layer: 0
   m_Name: Ground
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

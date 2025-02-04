@@ -7,6 +7,7 @@ using Object = UnityEngine.Object;
 
 public class PlayerController : MonoBehaviour
 {
+    private PlayerAbilities abilities;
     private Rigidbody rb;
     private int count;
 
@@ -17,16 +18,44 @@ public class PlayerController : MonoBehaviour
     public TextMeshProUGUI countText;
     public GameObject winTextObject;
     private int reaminingPickUps;
+
+    private bool grounded;
+
+    public void setGrounded(bool grounded)
+    {
+        this.grounded = grounded;
+    }
  
     public event Action OnPlayerDeath;
     void Start()
     {
+        abilities = GetComponent<PlayerAbilities>();
        rb = GetComponent<Rigidbody>();
        count = 0;
        SetCountText();
        winTextObject.SetActive(false);
        Type pickUpType = Type.GetType("Rotator");
        reaminingPickUps = UnityEngine.Object.FindObjectsByType(pickUpType, FindObjectsSortMode.None).Length;
+    }
+    
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space) && grounded)
+        {
+            abilities.Jump();
+        }
+
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            //TODO none of the getkeydown are firing, so not dashing in accordance with which directional key is 
+            //pressed with the dash key
+            if (Input.GetKeyDown(KeyCode.W)){abilities.Dash(Vector3.forward);}
+            else if (Input.GetKeyDown(KeyCode.D)){abilities.Dash(Vector3.right);}
+            else if (Input.GetKeyDown(KeyCode.A)){abilities.Dash(Vector3.left);}
+            else if (Input.GetKeyDown(KeyCode.S)){abilities.Dash(Vector3.back);}
+            else {abilities.Dash(Vector3.forward);}
+        }
+        
     }
 
     void OnMove(InputValue movementValue)
@@ -44,7 +73,6 @@ public class PlayerController : MonoBehaviour
         {
             rb.AddForce(movement*speed);
         }
-        
     }
 
     private void OnTriggerEnter(Collider other)
