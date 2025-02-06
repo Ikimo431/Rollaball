@@ -1,9 +1,10 @@
 using System;
-using Unity.VisualScripting;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
-using Object = UnityEngine.Object;
+using UnityEngine.SceneManagement;
+
 
 public class PlayerController : MonoBehaviour
 {
@@ -51,6 +52,8 @@ public class PlayerController : MonoBehaviour
             Vector3 dir = new Vector3(xPercent, 0, zPercent);
             abilities.Dash(dir);
         }
+
+        
     }
     void OnMove(InputValue movementValue)
     {
@@ -84,8 +87,15 @@ public class PlayerController : MonoBehaviour
             {
                 winTextObject.SetActive(true);
                 Destroy(GameObject.FindGameObjectWithTag("Enemy"));
+                StartCoroutine(toMenuTimer());
             }
         }
+    }
+
+    IEnumerator toMenuTimer()
+    {
+        yield return new WaitForSeconds(5f);
+        SceneManager.LoadScene(0);
     }
 
     private void OnCollisionEnter(Collision other)
@@ -101,7 +111,7 @@ public class PlayerController : MonoBehaviour
         Destroy(gameObject);
         OnPlayerDeath?.Invoke(); 
         winTextObject.SetActive(true);
-        winTextObject.GetComponent<TextMeshProUGUI>().text = "You Lose...";
+        winTextObject.GetComponent<TextMeshProUGUI>().text = "You Lose...\n\n Press Esc To Return To Menu";
     }
     
     //----GETTERS/SETTERS---------------
