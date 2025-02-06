@@ -20,13 +20,10 @@ public class PlayerController : MonoBehaviour
     private int reaminingPickUps;
 
     private bool grounded;
-
-    public void setGrounded(bool grounded)
-    {
-        this.grounded = grounded;
-    }
- 
-    public event Action OnPlayerDeath;
+    
+    public event Action OnPlayerDeath;// listened by CameraController
+    
+    //-----BUILT IN FUNCTIONS-----------
     void Start()
     {
         abilities = GetComponent<PlayerAbilities>();
@@ -44,20 +41,17 @@ public class PlayerController : MonoBehaviour
         {
             abilities.Jump();
         }
-
+       
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
-            //TODO none of the getkeydown are firing, so not dashing in accordance with which directional key is 
-            //pressed with the dash key
-            if (Input.GetKeyDown(KeyCode.W)){abilities.Dash(Vector3.forward);}
-            else if (Input.GetKeyDown(KeyCode.D)){abilities.Dash(Vector3.right);}
-            else if (Input.GetKeyDown(KeyCode.A)){abilities.Dash(Vector3.left);}
-            else if (Input.GetKeyDown(KeyCode.S)){abilities.Dash(Vector3.back);}
-            else {abilities.Dash(Vector3.forward);}
+            
+            float totVelocityMagnitude = Math.Abs(rb.linearVelocity.x) + Math.Abs(rb.linearVelocity.z);
+            float xPercent = rb.linearVelocity.x / totVelocityMagnitude;
+            float zPercent = rb.linearVelocity.z / totVelocityMagnitude;
+            Vector3 dir = new Vector3(xPercent, 0, zPercent);
+            abilities.Dash(dir);
         }
-        
     }
-
     void OnMove(InputValue movementValue)
     {
         Vector2 movementVector = movementValue.Get<Vector2>();
@@ -74,7 +68,6 @@ public class PlayerController : MonoBehaviour
             rb.AddForce(movement*speed);
         }
     }
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("PickUp")) 
@@ -106,13 +99,19 @@ public class PlayerController : MonoBehaviour
     void GameLoss()
     {
         Destroy(gameObject);
-        OnPlayerDeath?.Invoke();
+        OnPlayerDeath?.Invoke(); 
         winTextObject.SetActive(true);
         winTextObject.GetComponent<TextMeshProUGUI>().text = "You Lose...";
     }
+    
+    //----GETTERS/SETTERS---------------
     void SetCountText()
     {
         countText.text = "Count: " + count.ToString();
+    }
+    public void setGrounded(bool grounded)
+    {
+        this.grounded = grounded;
     }
     
 }
