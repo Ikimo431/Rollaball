@@ -7,6 +7,7 @@ using Object = UnityEngine.Object;
 
 public class PlayerController : MonoBehaviour
 {
+    private PlayerAbilities abilities;
     private Rigidbody rb;
     private int count;
 
@@ -17,10 +18,15 @@ public class PlayerController : MonoBehaviour
     public TextMeshProUGUI countText;
     public GameObject winTextObject;
     private int reaminingPickUps;
- 
-    public event Action OnPlayerDeath;
+
+    private bool grounded;
+    
+    public event Action OnPlayerDeath;// listened by CameraController
+    
+    //-----BUILT IN FUNCTIONS-----------
     void Start()
     {
+        abilities = GetComponent<PlayerAbilities>();
        rb = GetComponent<Rigidbody>();
        count = 0;
        SetCountText();
@@ -28,7 +34,24 @@ public class PlayerController : MonoBehaviour
        Type pickUpType = Type.GetType("Rotator");
        reaminingPickUps = UnityEngine.Object.FindObjectsByType(pickUpType, FindObjectsSortMode.None).Length;
     }
-
+    
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space) && grounded)
+        {
+            abilities.Jump();
+        }
+       
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            
+            float totVelocityMagnitude = Math.Abs(rb.linearVelocity.x) + Math.Abs(rb.linearVelocity.z);
+            float xPercent = rb.linearVelocity.x / totVelocityMagnitude;
+            float zPercent = rb.linearVelocity.z / totVelocityMagnitude;
+            Vector3 dir = new Vector3(xPercent, 0, zPercent);
+            abilities.Dash(dir);
+        }
+    }
     void OnMove(InputValue movementValue)
     {
         Vector2 movementVector = movementValue.Get<Vector2>();
@@ -44,9 +67,7 @@ public class PlayerController : MonoBehaviour
         {
             rb.AddForce(movement*speed);
         }
-        
     }
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("PickUp")) 
@@ -78,13 +99,19 @@ public class PlayerController : MonoBehaviour
     void GameLoss()
     {
         Destroy(gameObject);
-        OnPlayerDeath?.Invoke();
+        OnPlayerDeath?.Invoke(); 
         winTextObject.SetActive(true);
         winTextObject.GetComponent<TextMeshProUGUI>().text = "You Lose...";
     }
+    
+    //----GETTERS/SETTERS---------------
     void SetCountText()
     {
         countText.text = "Count: " + count.ToString();
+    }
+    public void setGrounded(bool grounded)
+    {
+        this.grounded = grounded;
     }
     
 }

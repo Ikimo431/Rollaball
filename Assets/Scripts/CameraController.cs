@@ -11,7 +11,6 @@ public class CameraController : MonoBehaviour
         offset=transform.position-player.transform.position;
         player.OnPlayerDeath += playerDeathEvent;
     }
-
     
     void LateUpdate()
     {
