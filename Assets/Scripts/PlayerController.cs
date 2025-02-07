@@ -100,7 +100,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.CompareTag(("Enemy"))) //LOSE CONDITION
+        if (other.gameObject.tag.Equals("Enemy")) //LOSE CONDITION
         {
             GameLoss();
         }
