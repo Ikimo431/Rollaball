@@ -30,8 +30,8 @@ public class PlayerController : MonoBehaviour
         abilities = GetComponent<PlayerAbilities>();
        rb = GetComponent<Rigidbody>();
        count = 0;
-       SetCountText();
        winTextObject.SetActive(false);
+       SetCountText();
        Type pickUpType = Type.GetType("Rotator");
        reaminingPickUps = UnityEngine.Object.FindObjectsByType(pickUpType, FindObjectsSortMode.None).Length;
     }
