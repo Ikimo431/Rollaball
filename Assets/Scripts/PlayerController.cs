@@ -21,6 +21,10 @@ public class PlayerController : MonoBehaviour
     private int reaminingPickUps;
 
     private bool grounded;
+
+    private AudioSource sfx;
+    public AudioClip collectSound;
+    public AudioClip winSound;
     
     public event Action OnPlayerDeath;// listened by CameraController
     
@@ -29,6 +33,7 @@ public class PlayerController : MonoBehaviour
     {
         abilities = GetComponent<PlayerAbilities>();
        rb = GetComponent<Rigidbody>();
+       sfx = GetComponent<AudioSource>();
        count = 0;
        winTextObject.SetActive(false);
        SetCountText();
@@ -78,6 +83,8 @@ public class PlayerController : MonoBehaviour
             Destroy(other.gameObject);
             count++;
             SetCountText();
+            sfx.clip = collectSound;
+            sfx.Play();
             
             Type pickUpType = Type.GetType("Rotator"); // pickup has rotator class from Rotator script 
             reaminingPickUps = UnityEngine.Object.FindObjectsByType(pickUpType, FindObjectsSortMode.None).Length-1;
@@ -87,6 +94,8 @@ public class PlayerController : MonoBehaviour
             {
                 winTextObject.SetActive(true);
                 Destroy(GameObject.FindGameObjectWithTag("Enemy"));
+                sfx.clip = winSound;
+                sfx.Play();
                 StartCoroutine(toMenuTimer());
             }
         }

@@ -6,15 +6,21 @@ public class PlayerAbilities : MonoBehaviour
 {
    private  Rigidbody rb;
    private PlayerController pc;
+   
    public float jumpForce;
    public float dashForce;
    public float dashCooldownSeconds;
    private float dashCooldown = 0;
+   
+   
+   private AudioSource sfx;
+   public AudioClip jumpSound;
 
    void Start()
    {
       rb=GetComponent<Rigidbody>();
       pc = GetComponent<PlayerController>();
+      sfx = GetComponent<AudioSource>();
    }
 
    void Update()
@@ -30,6 +36,8 @@ public class PlayerAbilities : MonoBehaviour
    {
       rb.AddForce(Vector3.up*jumpForce, ForceMode.Impulse);
       pc.setGrounded(false);
+      sfx.clip = jumpSound;
+      sfx.Play();
    }
    
    public void Dash(Vector3 dir)
